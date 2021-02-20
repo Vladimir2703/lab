@@ -95,7 +95,7 @@ $(document).ready(function () {
   var stockLeft = stock[0] + stock[1] + stock[2];
   var price = [140, 250, 200];
   var money = 0;
-  var storage = 2700;
+  var storage = 0;
   var moneyMax = 3000;
   var moneyLeft = moneyMax - storage;
   var timer, timer2;
