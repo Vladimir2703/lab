@@ -3,11 +3,23 @@ $(document).ready(function () {
     time();
   }, 1000);
 
+  let t = new Date();
+  var day = parseInt(t.getMinutes());
+
   let time = () => {
     let t = new Date();
     let hh = t.getHours() < 10 ? "0" + t.getHours() : t.getHours();
     let mm = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes();
     let ss = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds();
+    if (parseInt(mm) > day&&!crash.includes(true)) {
+      day = parseInt(mm);
+      log("Газеты за предыдущий день были изъяты");
+      stock[0] = 20;
+      stock[2] = 20;
+      updateStockLeft();
+    } else {
+      day = parseInt(mm);
+    }
     $("#time").text(hh + ":" + mm + ":" + ss);
   };
   var table = $("#table_1").DataTable({
@@ -110,12 +122,15 @@ $(document).ready(function () {
     switch (paper) {
       case 0:
         paperName = "Вечерняя Уфа";
+        $("#ufa_sell").text(parseInt($("#ufa_sell").text()) + 1);
         break;
       case 1:
         paperName = "PlayBoy";
+        $("#playBoy_sell").text(parseInt($("#playBoy_sell").text()) + 1);
         break;
       case 2:
         paperName = "The Times";
+        $("#theTimes_sell").text(parseInt($("#theTimes_sell").text()) + 1);
         break;
     }
     if (table.row(":last", { order: "index" }).data() != undefined) {
@@ -249,6 +264,7 @@ $(document).ready(function () {
       .removeClass("text-danger");
     $("#paper").text(stock[0] + stock[1] + stock[2]);
     $("#storage").text(moneyLeft);
+    counter_papper();
 
     timer = setInterval(() => {
       checkCrash();
@@ -309,6 +325,15 @@ $(document).ready(function () {
     updateStatusIfNotCrash();
   };
 
+  var counter;
+  let counter_papper = () => {
+    counter = setInterval(() => {
+      $("#ufa_left").text(stock[0]);
+      $("#playBoy_left").text(stock[1]);
+      $("#theTimes_left").text(stock[2]);
+    }, 1);
+  };
+
   let crash_paper = () => {
     stock = [0, 0, 0];
     clearTimeout(timer2);
@@ -328,6 +353,7 @@ $(document).ready(function () {
   $("#stop").click(() => {
     clearTimeout(timer2);
     clearInterval(timer);
+    clearInterval(counter);
     cycle = true;
     start = false;
     $("#start").attr("disabled", false);
